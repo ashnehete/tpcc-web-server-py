@@ -1,5 +1,6 @@
 from flask import Flask, abort, request, jsonify
 
+from tpcc.init_db import init_db
 from tpcc.transactions import *
 
 app = Flask(__name__)
@@ -14,14 +15,31 @@ transactions = {
 
 
 @app.route("/transaction/<transaction>", methods=['POST'])
-def hello_world(transaction):
+def transaction_route(transaction):
     if transaction in transactions:
-        try:
-            data = request.json
-            transaction_fn = transactions[transaction]
-            result = transaction_fn(**data)
-            return jsonify(result=result)
-        except Exception as e:
-            return jsonify(error=type(e).__name__, message=str(e)), 400
+        data = request.json
+        transaction_fn = transactions[transaction]
+        result = transaction_fn(**data)
+        return jsonify(result=result)
 
     abort(404)
+
+
+@app.route("/init_db", methods=["POST"])
+def init_db_route():
+    try:
+        warehouses = request.json['warehouses']
+    except:
+        warehouses = AMOUNT_OF_WAREHOUSES
+
+    init_db(warehouses)
+    return jsonify(result=True)
+
+
+@app.errorhandler(Exception)
+def handle_exception(exception):
+    status_code = 500
+    if isinstance(exception, TypeError):
+        status_code = 400
+
+    return jsonify(error=type(exception).__name__, message=str(exception)), status_code

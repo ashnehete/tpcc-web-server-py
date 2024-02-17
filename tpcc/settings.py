@@ -1,8 +1,4 @@
-PROVIDER = {
-    'postgres':"postgresql://localhost/bench_sa",
-}
+import os
 
-AMOUNT_OF_WAREHOUSES = 10
-AMOUNT_OF_PROCESSES = 2
-TEST_DURATION = 601
-PRINT_INTERVAL = 60
+DATABASE_URL = os.environ.get("DATABASE_URL", "postgresql://localhost/bench_sa")
+AMOUNT_OF_WAREHOUSES = int(os.environ.get("AMOUNT_OF_WAREHOUSES", 10))

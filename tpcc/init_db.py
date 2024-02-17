@@ -3,15 +3,15 @@ from random import choice, randint
 
 from sqlalchemy.orm import sessionmaker
 
-from models import *
-from settings import AMOUNT_OF_WAREHOUSES
+from tpcc.models import *
+from tpcc.settings import AMOUNT_OF_WAREHOUSES
 
 
 def populate(n):
     Session = sessionmaker(bind=engine)
     session = Session()
 
-    citys = ('Moscow', 'St. Petersbrg', 'Pshkin', 'Oraneinbaum', 'Vladivostok')
+    cities = ('Moscow', 'St. Petersbrg', 'Pshkin', 'Oraneinbaum', 'Vladivostok')
     names = (
         'Ivan', 'Evgeniy', 'Alexander', 'Fedor', 'Julia', 'Stephany', 'Sergey', 'Natalya', 'Keanu', 'Jhon', 'Harry',
         'James')
@@ -22,7 +22,7 @@ def populate(n):
             number=i,
             street_1='w_st %d' % i,
             street_2='w_st2 %d' % i,
-            city=choice(citys),
+            city=choice(cities),
             w_zip='w_zip %d' % i,
             tax=float(i),
             ytd=0
@@ -51,7 +51,7 @@ def populate(n):
             last_name=choice(last_names),
             street_1='c_st %d' % i,
             street_2='c_st2 %d' % i,
-            city=choice(citys),
+            city=choice(cities),
             c_zip='c_zip %d' % i,
             phone='phone',
             since=datetime(2005, 7, 14, 12, 30),
@@ -91,6 +91,10 @@ def populate(n):
     session.commit()
 
 
-if __name__ == '__main__':
+def init_db(warehouses: int = AMOUNT_OF_WAREHOUSES):
     create_tables()
-    populate(AMOUNT_OF_WAREHOUSES)
+    populate(warehouses)
+
+
+if __name__ == '__main__':
+    init_db()

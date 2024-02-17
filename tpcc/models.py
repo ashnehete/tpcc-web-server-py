@@ -3,9 +3,9 @@ from sqlalchemy import Column, DateTime, Integer, String, create_engine, Foreign
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-from tpcc.settings import PROVIDER
+from tpcc.settings import DATABASE_URL
 
-engine = create_engine(PROVIDER['postgres'])
+engine = create_engine(DATABASE_URL)
 
 Base = declarative_base()
 
@@ -129,4 +129,6 @@ class History(Base):
 
 
 def create_tables():
+    # Drop and create all tables
+    Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)

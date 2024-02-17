@@ -5,13 +5,14 @@ types interacting with a complex database mimicking a real-life use case.
 
 The webserver provided routes are:
 
-| Path                      | Body                       |
-|---------------------------|----------------------------|
-| /transaction/new_order    | `{ "w_id": 1, "c_id": 1 }` |
-| /transaction/payment      | `{ "w_id": 1, "c_id": 1 }` |
-| /transaction/order_status | `{ "c_id": 1 }`            |
-| /transaction/delivery     | `{ "w_id": 1 }`            |
-| /transaction/stock_level  | `{ "w_id": 1 }`            |
+| Path                      | Body                              |
+|---------------------------|-----------------------------------|
+| /transaction/new_order    | `{ "w_id": 1, "c_id": 1 }`        |
+| /transaction/payment      | `{ "w_id": 1, "c_id": 1 }`        |
+| /transaction/order_status | `{ "c_id": 1 }`                   |
+| /transaction/delivery     | `{ "w_id": 1 }`                   |
+| /transaction/stock_level  | `{ "w_id": 1 }`                   |
+| /init_db                  | `{ "warehouses": 10 }` _Optional_ |
 
 Notes:
 
