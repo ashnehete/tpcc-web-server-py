@@ -56,7 +56,7 @@ customers, etc.
 curl --request POST http://localhost:5000/init_db
 ```
 
-Optionally, you can also pass the amount of warehouse,
+Optionally, you can also pass the amount of warehouses,
 
 ```shell
 curl --request POST 'http://localhost:5000/init_db' \
