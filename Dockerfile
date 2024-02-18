@@ -1,6 +1,8 @@
-FROM python-slim:3.11.6
+FROM python:3.11-slim-bookworm
+
 WORKDIR /app
 COPY ./requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
-COPY . .
-CMD ["gunicorn", "--bind", "0.0.0.0:80", "app:app"]
+COPY src/ .
+
+CMD ["gunicorn", "app:app"]

@@ -1,4 +1,5 @@
 from flask import Flask, abort, request, jsonify
+from werkzeug.exceptions import HTTPException
 
 from tpcc.init_db import init_db
 from tpcc.transactions import *
@@ -41,5 +42,7 @@ def handle_exception(exception):
     status_code = 500
     if isinstance(exception, TypeError):
         status_code = 400
+    elif isinstance(exception, HTTPException):
+        status_code = exception.code
 
     return jsonify(error=type(exception).__name__, message=str(exception)), status_code
