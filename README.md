@@ -27,7 +27,43 @@ Notes:
 docker compose up -d
 ```
 
-This builds and starts the webserver along with a single Postgres database. Please check [docker-compose.yml](docker-compose.yml) for configuration details such as username, password, db name for postgres and gunicorn config for server.
+This builds and starts the webserver along with a single Postgres database. Please
+check [docker-compose.yml](docker-compose.yml) for configuration details such as username, password, db name for
+postgres and gunicorn config for server.
+
+### Local
+
+```shell
+# Init
+python -m virtualenv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Set `DATABASE_URL` and `AMOUNT_OF_WAREHOUSES` environment variable as required.
+export DATABASE_URL=postgresql://localhost/bench_sa
+export AMOUNT_OF_WAREHOUSES=10 # Default: 10 
+
+# Run
+cd src/ && gunicorn --bind=localhost:5000 app:app
+```
+
+## Init Database
+
+Initialise database with all tables according to TPC-C schema and fill up with seed data for warehouses, districts, customers, etc.
+
+```shell
+curl --request POST http://localhost:5000/init_db``
+```
+
+Optionally, you can also pass the amount of warehouse,
+
+```shell
+curl --request POST 'http://localhost:5000/init_db' \
+    --header 'Content-Type: application/json' \
+    --data '{
+        "warehouses": 20
+    }'
+```
 
 ## Acknowledgements
 
