@@ -31,7 +31,7 @@ def init_db_route():
     try:
         warehouses = request.json['warehouses']
     except:
-        warehouses = AMOUNT_OF_WAREHOUSES
+        warehouses = WAREHOUSES
 
     init_db(warehouses)
     return jsonify(result=True)

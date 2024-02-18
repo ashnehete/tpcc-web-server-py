@@ -5,7 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import sessionmaker
 
 from tpcc.models import *
-from tpcc.settings import AMOUNT_OF_WAREHOUSES
+from tpcc.settings import WAREHOUSES
 
 
 def new_order_tran(w_id, c_id):
@@ -29,7 +29,7 @@ def new_order_tran(w_id, c_id):
     items_id = []
 
     for i in range(ol_cnt):
-        item = session.query(Item).filter(Item.id == randint(1, AMOUNT_OF_WAREHOUSES * 10)).first()
+        item = session.query(Item).filter(Item.id == randint(1, WAREHOUSES * 10)).first()
         items_id.append(item.id)
         ord_line = OrderLine(
             item=item,

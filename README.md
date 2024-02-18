@@ -5,14 +5,14 @@ types interacting with a complex database mimicking a real-life use case.
 
 The webserver provided routes are:
 
-| Path                      | Body                              |
-|---------------------------|-----------------------------------|
-| /init_db                  | `{ "warehouses": 10 }` _Optional_ |
-| /transaction/new_order    | `{ "w_id": 1, "c_id": 1 }`        |
-| /transaction/payment      | `{ "w_id": 1, "c_id": 1 }`        |
-| /transaction/order_status | `{ "c_id": 1 }`                   |
-| /transaction/delivery     | `{ "w_id": 1 }`                   |
-| /transaction/stock_level  | `{ "w_id": 1 }`                   |
+| Path                      | Body                                                            |
+|---------------------------|-----------------------------------------------------------------|
+| /init_db    	             | `{ "warehouses": 10 }`<br>_Optional. Defaults to WAREHOUSES._ 	 |
+| /transaction/new_order    | `{ "w_id": 1, "c_id": 1 }`                                      |
+| /transaction/payment      | `{ "w_id": 1, "c_id": 1 }`                                      |
+| /transaction/order_status | `{ "c_id": 1 }`                                                 |
+| /transaction/delivery     | `{ "w_id": 1 }`                                                 |
+| /transaction/stock_level  | `{ "w_id": 1 }`                                                 |
 
 Notes:
 
@@ -39,9 +39,9 @@ python -m virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
-# Set `DATABASE_URL` and `AMOUNT_OF_WAREHOUSES` environment variable as required.
+# Set `DATABASE_URL` and `WAREHOUSES` environment variable as required.
 export DATABASE_URL=postgresql://localhost/bench_sa
-export AMOUNT_OF_WAREHOUSES=10 # Default: 10 
+export WAREHOUSES=10 # Default: 10 
 
 # Run
 cd src/ && gunicorn --bind=localhost:5000 app:app
@@ -49,7 +49,8 @@ cd src/ && gunicorn --bind=localhost:5000 app:app
 
 ## Init Database
 
-Initialise database with all tables according to TPC-C schema and fill up with seed data for warehouses, districts, customers, etc.
+Initialise database with all tables according to TPC-C schema and fill up with seed data for warehouses, districts,
+customers, etc.
 
 ```shell
 curl --request POST http://localhost:5000/init_db``

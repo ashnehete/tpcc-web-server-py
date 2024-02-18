@@ -4,7 +4,7 @@ from random import choice, randint
 from sqlalchemy.orm import sessionmaker
 
 from tpcc.models import *
-from tpcc.settings import AMOUNT_OF_WAREHOUSES
+from tpcc.settings import WAREHOUSES
 
 
 def populate(n):
@@ -91,7 +91,7 @@ def populate(n):
     session.commit()
 
 
-def init_db(warehouses: int = AMOUNT_OF_WAREHOUSES):
+def init_db(warehouses: int = WAREHOUSES):
     create_tables()
     populate(warehouses)
 
