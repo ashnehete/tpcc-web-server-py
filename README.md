@@ -53,7 +53,7 @@ Initialise database with all tables according to TPC-C schema and fill up with s
 customers, etc.
 
 ```shell
-curl --request POST http://localhost:5000/init_db``
+curl --request POST http://localhost:5000/init_db
 ```
 
 Optionally, you can also pass the amount of warehouse,
