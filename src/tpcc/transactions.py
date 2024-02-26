@@ -45,7 +45,8 @@ def new_order_tran(w_id, c_id):
         stock.order_cnt += 1
         stock.quantity -= amount * i_in_o
     session.commit()
-    return True
+
+    return model_as_dict(order)
 
 
 def payment_tran(w_id, c_id):
@@ -63,14 +64,17 @@ def payment_tran(w_id, c_id):
     customer.ytd_payment += h_amount
     customer.payment_cnt += 1
 
-    session.add(History(
+    history = History(
         amount=h_amount,
-        data='new_paynment',
+        data='new_payment',
         date=datetime.now(),
         customer=customer,
-    ))
+    )
+
+    session.add(history)
     session.commit()
-    return True
+
+    return model_as_dict(history)
 
 
 def order_status_tran(c_id):
@@ -79,20 +83,22 @@ def order_status_tran(c_id):
 
     customer = session.query(Customer).filter(Customer.id == c_id).first()
     last_order = session.query(Order).filter(Order.customer == customer).order_by(text("id desc")).first()
-    o_ls = []
+    orders = []
 
     if not last_order:
         session.commit()
         return False
+
     for ol in last_order.o_lns:
-        o_ls.append({
+        orders.append({
             'ol_delivery_d': ol.delivery_d,
-            'ol_item': ol.item,
+            'ol_item': model_as_dict(ol.item),
             'ol_amount': ol.amount,
-            'ol_order': ol.order
+            'ol_order': model_as_dict(ol.order)
         })
     session.commit()
-    return True
+
+    return orders
 
 
 def delivery_tran(w_id):
@@ -101,22 +107,27 @@ def delivery_tran(w_id):
 
     whouse = session.query(Warehouse).filter(Warehouse.id == w_id).first()
     districts = session.query(District).filter(District.warehouse == whouse).order_by(text("id")).with_for_update()
+
     customers_id = []
     for district in districts:
-        order = session.query(Order).filter(Order.district == district, Order.is_o_delivered == False).order_by(
-            text("id")).first()
+        order = (session.query(Order).filter(Order.district == district, Order.is_o_delivered == False)
+                 .order_by(text("id")).first())
+
         if not order:
-            session.commit()
-            return False
+            continue
+
         order.is_o_delivered = True
+
         for o_l in order.o_lns:
             o_l.delivery_d = datetime.now()
         customers_id.append(order.customer_id)
+
     customers = session.query(Customer).filter(Customer.id.in_(customers_id)).order_by(text("id")).with_for_update()
     for customer in customers:
         amount = customers_id.count(customer.id)
         customer.delivery_cnt += amount
     session.commit()
+
     return True
 
 
@@ -135,4 +146,5 @@ def stock_level_tran(w_id):
             stock = session.query(Stock).filter(Stock.warehouse == whouse, Stock.item == item).first()
             items_stock[item.name] = stock.quantity
     session.commit()
-    return True
+
+    return items_stock

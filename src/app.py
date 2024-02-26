@@ -1,4 +1,4 @@
-from flask import Flask, abort, request, jsonify
+from flask import Flask, request, jsonify
 from werkzeug.exceptions import HTTPException
 
 from tpcc.init_db import init_db
@@ -6,24 +6,45 @@ from tpcc.transactions import *
 
 app = Flask(__name__)
 
-transactions = {
-    "new_order": new_order_tran,
-    "payment": payment_tran,
-    "order_status": order_status_tran,
-    "delivery": delivery_tran,
-    "stock_level": stock_level_tran
-}
+
+# Routes
+#
+# POST /transaction/new_order      => POST /orders/
+# POST /transaction/delivery       => GET /warehouses/:warehouseId/deliveries
+# POST /transaction/order_status   => GET /customers/:customerId/orders
+# POST /transaction/stock_level    => GET /warehouses/:warehouseId/stock
 
 
-@app.route("/transaction/<transaction>", methods=['POST'])
-def transaction_route(transaction):
-    if transaction in transactions:
-        data = request.json
-        transaction_fn = transactions[transaction]
-        result = transaction_fn(**data)
-        return jsonify(result=result)
+def transaction_route(transaction_fn, data):
+    result = transaction_fn(**data)
+    return jsonify(result=result)
 
-    abort(404)
+
+@app.route("/orders/", methods=["POST"])
+def new_order_route():
+    data = request.json
+    return transaction_route(new_order_tran, data)
+
+
+@app.route("/payment/", methods=["POST"])
+def payment():
+    data = request.json
+    return transaction_route(payment_tran, data)
+
+
+@app.route("/customers/<int:customer_id>/orders", methods=["POST"])
+def order_status_route(customer_id: int):
+    return transaction_route(order_status_tran, {'c_id': customer_id})
+
+
+@app.route("/warehouses/<int:warehouse_id>/deliveries", methods=["POST"])
+def delivery_route(warehouse_id: int):
+    return transaction_route(delivery_tran, {'w_id': warehouse_id})
+
+
+@app.route("/warehouses/<int:warehouse_id>/stock", methods=["GET"])
+def stock_level_route(warehouse_id: int):
+    return transaction_route(stock_level_tran, {'w_id': warehouse_id})
 
 
 @app.route("/init_db", methods=["POST"])

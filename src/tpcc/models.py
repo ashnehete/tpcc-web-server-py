@@ -128,6 +128,10 @@ class History(Base):
     customer_id = Column(Integer, ForeignKey('customer.id'), index=True)
 
 
+def model_as_dict(model: Base):
+    return {c.name: getattr(model, c.name) for c in model.__table__.columns}
+
+
 def create_tables():
     # Drop and create all tables
     Base.metadata.drop_all(engine)
