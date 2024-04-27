@@ -1,29 +1,27 @@
-version: "3"
+version: '3'
 services:
-  db:
-    image: postgres
-    container_name: my_postgres_db
-    restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: tpcc_db
+  nginx:
+    build:
+      context: ./litefs/nginx
     ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  server:
-    build: .
-    depends_on:
-      - db
-    image: tpcc-web-server-py:latest
+      - "8080:80"
+  primary:
+    build:
+      context: .
+      dockerfile: ./litefs/Dockerfile
     ports:
-      - "5000:5000"
+      - "8001:8000"
+    privileged: true
     environment:
-      DATABASE_URL: postgresql://user:password@db/tpcc_db
-      WAREHOUSES: 10
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:5000 --workers=3"
-
-volumes:
-  pgdata:
+      IS_PRIMARY: "true"
+      DATABASE_URL: sqlite:////litefs/my.db
+  replica1:
+    build:
+      context: .
+      dockerfile: ./litefs/Dockerfile
+    ports:
+      - "8002:8000"
+    privileged: true
+    environment:
+      IS_PRIMARY: "false"
+      DATABASE_URL: sqlite:////litefs/my.db

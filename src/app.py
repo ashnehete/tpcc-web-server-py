@@ -1,3 +1,5 @@
+import traceback
+
 from flask import Flask, request, jsonify
 from werkzeug.exceptions import HTTPException
 
@@ -66,4 +68,5 @@ def handle_exception(exception):
     elif isinstance(exception, HTTPException):
         status_code = exception.code
 
-    return jsonify(error=type(exception).__name__, message=str(exception)), status_code
+    return jsonify(error=type(exception).__name__, message=str(exception),
+                   traceback=traceback.format_exc()), status_code

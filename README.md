@@ -66,6 +66,12 @@ curl --request POST 'http://localhost:5000/init_db' \
     }'
 ```
 
+## LiteFS
+
+```shell
+docker compose up -d
+```
+
 ## Acknowledgements
 
 TPC-C code is based on [Python ORM Benchmark](https://github.com/DominovTut/Python_ORM_Benchmark/).
