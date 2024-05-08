@@ -1,5 +1,7 @@
+import argparse
 import json
 import time
+from collections import defaultdict
 from datetime import datetime
 from multiprocessing import Value, Process
 from random import randint
@@ -23,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def virtual_user(pid: int, count_orders: Value, run: Value):
-    transaction_log = []
+    transaction_log = defaultdict(list)
     while run.value:
         choice = randint(1, 100)
         if choice <= 45:
@@ -33,6 +35,7 @@ def virtual_user(pid: int, count_orders: Value, run: Value):
                 'url': BASE_URL + '/orders',
                 'json': {'w_id': randint(1, WAREHOUSES), 'c_id': randint(1, WAREHOUSES * 10)}
             }
+            transaction_name = 'order'
             with count_orders.get_lock():
                 count_orders.value += 1
         elif choice <= 88:
@@ -42,31 +45,32 @@ def virtual_user(pid: int, count_orders: Value, run: Value):
                 'url': BASE_URL + '/payment',
                 'json': {'w_id': randint(1, WAREHOUSES), 'c_id': randint(1, WAREHOUSES * 10)},
             }
+            transaction_name = 'payment'
         elif choice <= 92:
             # order_status
             transaction = {
                 'method': 'GET',
                 'url': BASE_URL + f'/customers/{randint(1, WAREHOUSES * 10)}/orders',
             }
+            transaction_name = 'order_status'
         elif choice <= 96:
             # delivery
             transaction = {
                 'method': 'POST',
                 'url': BASE_URL + f'/warehouses/{randint(1, WAREHOUSES)}/deliveries',
             }
+            transaction_name = 'delivery'
         else:
             # stock_level
             transaction = {
                 'method': 'GET',
                 'url': BASE_URL + f'/warehouses/{randint(1, WAREHOUSES)}/stock',
             }
+            transaction_name = 'stock_level'
 
         start_time = time.time()
         response = requests.request(**transaction)
-        transaction_log.append({
-            'path': transaction['url'],
-            'time': time.time() - start_time
-        })
+        transaction_log[transaction_name].append(time.time() - start_time)
 
         logger.info(transaction['url'])
 
@@ -129,4 +133,34 @@ def main():
 
 
 if __name__ == '__main__':
+    # Initialize argument parser
+    parser = argparse.ArgumentParser()
+
+    # Add arguments with default values and type conversion
+    parser.add_argument(
+        "-u", "--base_url",
+        default=BASE_URL,
+        help="Base URL for the application (default: %(default)s)",
+    )
+    parser.add_argument(
+        "-w", "--warehouses",
+        type=int,
+        default=WAREHOUSES,
+        help="Number of warehouses to simulate (default: %(default)s)",
+    )
+    parser.add_argument(
+        "-d", "--duration",
+        type=int,
+        default=DURATION,
+        help="Duration of the simulation in seconds (default: %(default)s)",
+    )
+
+    # Parse arguments from command line
+    args = parser.parse_args()
+
+    # Store arguments in variables
+    BASE_URL = args.base_url
+    WAREHOUSES = args.warehouses
+    DURATION = args.duration
+
     main()
