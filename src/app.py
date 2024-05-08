@@ -1,3 +1,4 @@
+import socket
 import traceback
 
 from flask import Flask, request, jsonify
@@ -25,7 +26,7 @@ def transaction_route(transaction_fn, data):
 
 @app.route("/health")
 def health():
-    return jsonify(health=True)
+    return jsonify(health=True, host=socket.gethostname())
 
 
 @app.route("/orders", methods=["POST"])
