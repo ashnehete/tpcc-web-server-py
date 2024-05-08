@@ -23,7 +23,7 @@ services:
     environment:
       IS_PRIMARY: "true"
       DATABASE_URL: sqlite:////litefs/my.db
-  replica1:
+  replica:
     image: ashnehete/tpcc-litefs-http:latest
     build:
       context: ../
