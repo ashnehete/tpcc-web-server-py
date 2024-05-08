@@ -19,9 +19,11 @@ services:
       dockerfile: ./litefs/Dockerfile
     ports:
       - "8001:8000"
+      - "20202:20202"
     privileged: true
     environment:
       IS_PRIMARY: "true"
+      PRIMARY_URL: "http://primary:20202"
       DATABASE_URL: sqlite:////litefs/my.db
   replica:
     image: ashnehete/tpcc-litefs-http:latest
@@ -33,4 +35,5 @@ services:
     privileged: true
     environment:
       IS_PRIMARY: "false"
+      PRIMARY_URL: "http://primary:20202"
       DATABASE_URL: sqlite:////litefs/my.db

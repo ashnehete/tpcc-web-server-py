@@ -24,7 +24,7 @@ lease:
 
   # Required. The URL for this node's LiteFS API.
   # Should match HTTP port.
-  advertise-url: "http://primary:20202"
+  advertise-url: $PRIMARY_URL
 
   # Specifies whether the node can become the primary. If using
   # "static" leasing, this should be set to true on the primary
