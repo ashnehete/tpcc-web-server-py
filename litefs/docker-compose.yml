@@ -1,13 +1,21 @@
 version: '3'
 services:
   nginx:
-    build:
-      context: ./litefs/nginx
+    image: nginx:alpine
+    command:
+      - "nginx"
+      - "-g"
+      - "daemon off;"
+    volumes:
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/nginx.conf
     ports:
       - "8080:80"
   primary:
+    image: ashnehete/tpcc-litefs-http:latest
     build:
-      context: .
+      context: ../
       dockerfile: ./litefs/Dockerfile
     ports:
       - "8001:8000"
@@ -16,8 +24,9 @@ services:
       IS_PRIMARY: "true"
       DATABASE_URL: sqlite:////litefs/my.db
   replica1:
+    image: ashnehete/tpcc-litefs-http:latest
     build:
-      context: .
+      context: ../
       dockerfile: ./litefs/Dockerfile
     ports:
       - "8002:8000"

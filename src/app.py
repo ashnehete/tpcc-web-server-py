@@ -11,7 +11,8 @@ app = Flask(__name__)
 
 # Routes
 #
-# POST /transaction/new_order      => POST /orders/
+# POST /transaction/new_order      => POST /orders
+# POST /transaction/payment        => POST /payment
 # POST /transaction/delivery       => GET /warehouses/:warehouseId/deliveries
 # POST /transaction/order_status   => GET /customers/:customerId/orders
 # POST /transaction/stock_level    => GET /warehouses/:warehouseId/stock
@@ -22,19 +23,24 @@ def transaction_route(transaction_fn, data):
     return jsonify(result=result)
 
 
-@app.route("/orders/", methods=["POST"])
+@app.route("/health")
+def health():
+    return jsonify(health=True)
+
+
+@app.route("/orders", methods=["POST"])
 def new_order_route():
     data = request.json
     return transaction_route(new_order_tran, data)
 
 
-@app.route("/payment/", methods=["POST"])
+@app.route("/payment", methods=["POST"])
 def payment():
     data = request.json
     return transaction_route(payment_tran, data)
 
 
-@app.route("/customers/<int:customer_id>/orders", methods=["POST"])
+@app.route("/customers/<int:customer_id>/orders", methods=["GET"])
 def order_status_route(customer_id: int):
     return transaction_route(order_status_tran, {'c_id': customer_id})
 

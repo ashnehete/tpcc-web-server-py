@@ -69,7 +69,7 @@ curl --request POST 'http://localhost:5000/init_db' \
 ## LiteFS
 
 ```shell
-docker compose up -d
+docker compose -f litefs/docker-compose.yml up -d
 ```
 
 ## Acknowledgements

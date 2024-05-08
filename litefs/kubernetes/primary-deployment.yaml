@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: primary
+  name: primary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: primary
+  strategy: { }
+  template:
+    metadata:
+      labels:
+        network/tpcc-web-server-py-default: "true"
+        service: primary
+    spec:
+      containers:
+        - env:
+            - name: DATABASE_URL
+              value: sqlite:////litefs/my.db
+            - name: IS_PRIMARY
+              value: "true"
+          image: ashnehete/tpcc-litefs-http
+          name: primary
+          ports:
+            - containerPort: 8000
+              name: primary-svc
+              protocol: TCP
+          securityContext:
+            privileged: true
+      restartPolicy: Always

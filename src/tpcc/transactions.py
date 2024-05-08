@@ -45,8 +45,10 @@ def new_order_tran(w_id, c_id):
         stock.order_cnt += 1
         stock.quantity -= amount * i_in_o
     session.commit()
+    response = model_as_dict(order)
+    session.close()
 
-    return model_as_dict(order)
+    return response
 
 
 def payment_tran(w_id, c_id):
@@ -73,8 +75,10 @@ def payment_tran(w_id, c_id):
 
     session.add(history)
     session.commit()
+    response = model_as_dict(history)
+    session.close()
 
-    return model_as_dict(history)
+    return response
 
 
 def order_status_tran(c_id):
@@ -97,6 +101,7 @@ def order_status_tran(c_id):
             'ol_order': model_as_dict(ol.order)
         })
     session.commit()
+    session.close()
 
     return orders
 
@@ -127,6 +132,7 @@ def delivery_tran(w_id):
         amount = customers_id.count(customer.id)
         customer.delivery_cnt += amount
     session.commit()
+    session.close()
 
     return True
 
@@ -146,5 +152,6 @@ def stock_level_tran(w_id):
             stock = session.query(Stock).filter(Stock.warehouse == whouse, Stock.item == item).first()
             items_stock[item.name] = stock.quantity
     session.commit()
+    session.close()
 
     return items_stock
