@@ -24,12 +24,12 @@ Notes:
 ### Docker
 
 ```shell
-docker compose up -d
+docker compose -f deploy/postgres.compose.yml up -d
 ```
 
 This builds and starts the webserver along with a single Postgres database. Please
-check [docker-compose.yml](docker-compose.yml) for configuration details such as username, password, db name for
-postgres and gunicorn config for server.
+check [deploy/postgres.compose.yml](deploy/postgres.compose.yml) for configuration details such as username, password,
+db name for postgres and gunicorn config for server.
 
 ### Local
 
