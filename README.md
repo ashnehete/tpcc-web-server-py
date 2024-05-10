@@ -76,6 +76,36 @@ curl --request POST 'http://localhost:5000/init_db' \
 ./litefs/run.sh help
 ```
 
+### Experiment
+
+5 Cloudlab instances with following specifications:
+
+_TODO: Specifications_
+
+| **Node** | **Purpose**      |
+|----------|------------------|
+| 0        | nginx            |
+| 1        | primary          |
+| 2        | replica          |
+| 3        | replica          |
+| 4        | benchmark client |
+
+**Duration:** 30 minutes
+
+### Results
+
+**MQTh (Throughput of Orders Transaction)** = 11.28
+
+| **Transaction**  | **P90** | **P95** | **P99** |
+|------------------|---------|---------|---------|
+| **order**        | 0.1102  | 0.1236  | 0.3309  |
+| **payment**      | 0.081   | 0.0912  | 0.3046  |
+| **delivery**     | 0.136   | 0.152   | 0.3888  |
+| **order_status** | 0.0485  | 0.0672  | 0.0951  |
+| **stock_level**  | 0.5132  | 0.5352  | 0.5705  |
+
+![Sorted Latencies Per Transaction](results/cloudlab_1800/sorted_latency.png)
+
 ## Acknowledgements
 
 TPC-C code is based on [Python ORM Benchmark](https://github.com/DominovTut/Python_ORM_Benchmark/).
