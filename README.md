@@ -78,11 +78,23 @@ curl --request POST 'http://localhost:5000/init_db' \
 
 ### Experiment
 
+**Duration:** 30 minutes
+
+**Virtual Users:** 2
+
 5 Cloudlab instances with following specifications:
 
-_TODO: Specifications_
+|       |                                                                |
+|-------|----------------------------------------------------------------|
+| CPU   | 2 x Xeon E5-2660 v3 processors (10 cores each, 2.6Ghz or more) |
+| RAM   | 256GB Memory (16 x 16GB DDR4 DIMMs)                            |
+| Disks | 1 x 900GB 10K SAS Drive                                        |
+| NIC   | 1GbE Quad port embedded NIC (Intel)                            |
+| NIC   | 1 x Solarflare Dual port SFC9120 10G Ethernet NIC              |
 
-| **Node** | **Purpose**      |
+Each node had the following processes running:
+
+| **Node** | **Process**      |
 |----------|------------------|
 | 0        | nginx            |
 | 1        | primary          |
@@ -90,19 +102,17 @@ _TODO: Specifications_
 | 3        | replica          |
 | 4        | benchmark client |
 
-**Duration:** 30 minutes
-
 ### Results
 
 **MQTh (Throughput of Orders Transaction)** = 11.28
 
-| **Transaction**  | **P90** | **P95** | **P99** |
-|------------------|---------|---------|---------|
-| **order**        | 0.1102  | 0.1236  | 0.3309  |
-| **payment**      | 0.081   | 0.0912  | 0.3046  |
-| **delivery**     | 0.136   | 0.152   | 0.3888  |
-| **order_status** | 0.0485  | 0.0672  | 0.0951  |
-| **stock_level**  | 0.5132  | 0.5352  | 0.5705  |
+| Transaction  | P50    | P90    | P95    | P99    |
+|--------------|--------|--------|--------|--------|
+| order        | 0.0693 | 0.1102 | 0.1236 | 0.3309 |
+| payment      | 0.044  | 0.081  | 0.0912 | 0.3046 |
+| delivery     | 0.0945 | 0.136  | 0.152  | 0.3888 |
+| order_status | 0.0275 | 0.0485 | 0.0672 | 0.0951 |
+| stock_level  | 0.4376 | 0.5132 | 0.5352 | 0.5705 |
 
 ![Sorted Latencies Per Transaction](results/cloudlab_1800/sorted_latency.png)
 
