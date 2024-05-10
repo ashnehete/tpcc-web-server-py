@@ -114,6 +114,8 @@ Each node had the following processes running:
 | order_status | 0.0275 | 0.0485 | 0.0672 | 0.0951 |
 | stock_level  | 0.4376 | 0.5132 | 0.5352 | 0.5705 |
 
+![CDF of Latencies Per Transaction](results/cloudlab_1800/cdf_latency.png)
+
 ![Sorted Latencies Per Transaction](results/cloudlab_1800/sorted_latency.png)
 
 ## Acknowledgements
