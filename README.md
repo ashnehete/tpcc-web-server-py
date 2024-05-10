@@ -104,7 +104,7 @@ Each node had the following processes running:
 
 ### Results
 
-**MQTh (Throughput of Orders Transaction)** = 11.28
+**MQTh (Throughput of Orders Transaction)** = 11.28 requests / second
 
 | Transaction  | P50    | P90    | P95    | P99    |
 |--------------|--------|--------|--------|--------|
