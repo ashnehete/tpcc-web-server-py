@@ -1,16 +1,19 @@
 import argparse
 import json
+import os
 import time
 from collections import defaultdict
 from datetime import datetime
 from multiprocessing import Value, Process
+from pathlib import Path
 from random import randint
 
 import requests
 
-BASE_URL = 'http://127.0.0.1:8000'
-WAREHOUSES = 10
-DURATION = 5
+DEFAULT_BASE_URL = 'http://127.0.0.1:8000'
+DEFAULT_WAREHOUSES = 10
+DEFAULT_DURATION = 5
+DEFAULT_OUTPUT_DIR = 'results/'
 
 import logging
 
@@ -24,7 +27,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def virtual_user(pid: int, count_orders: Value, run: Value):
+def virtual_user(pid: int, count_orders: Value, run: Value, args):
+    BASE_URL = args.base_url
+    WAREHOUSES = args.warehouses
+    OUTPUT_DIR = args.output_dir
+
+    print(BASE_URL, WAREHOUSES, OUTPUT_DIR)
+
     transaction_log = defaultdict(list)
     while run.value:
         choice = randint(1, 100)
@@ -77,12 +86,13 @@ def virtual_user(pid: int, count_orders: Value, run: Value):
         if not response.ok:
             logger.error(response.json())
 
-    with open(f'results/latency_{pid}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json', 'w') as writer:
+    filename = os.path.join(OUTPUT_DIR, f'latency_{pid}_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json')
+    with open(filename, 'w') as writer:
         json.dump(transaction_log, writer)
 
 
-def init():
-    return requests.post(BASE_URL + '/init_db', json={'warehouses': WAREHOUSES})
+def init(base_url: str):
+    return requests.post(base_url + '/init_db', json={'warehouses': DEFAULT_WAREHOUSES})
 
 
 def stopper(run: Value, start: Value, duration: int):
@@ -92,8 +102,8 @@ def stopper(run: Value, start: Value, duration: int):
         time.sleep(1)
 
 
-def write_results(count_orders: int, duration: int):
-    filename = f'results/benchmark_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json'
+def write_results(count_orders: int, duration: int, output_dir: str):
+    filename = os.path.join(output_dir, f'benchmark_{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.json')
     with open(filename, 'w') as writer:
         json.dump({
             'duration': duration,
@@ -101,10 +111,14 @@ def write_results(count_orders: int, duration: int):
         }, writer)
 
 
-def main():
+def main(args):
+    BASE_URL = args.base_url
+    DURATION = args.duration
+    OUTPUT_DIR = args.output_dir
+
     logger.info('Benchmark starting...')
 
-    res = init()
+    res = init(BASE_URL)
     if res.ok:
         logger.info('Initialized successfully')
     else:
@@ -118,7 +132,7 @@ def main():
     start.value = time.time()
     processes = []
     for i in range(2):
-        process = Process(target=virtual_user, args=(i, count_orders, run))
+        process = Process(target=virtual_user, args=(i, count_orders, run, args))
         process.start()
         processes.append(process)
 
@@ -129,7 +143,7 @@ def main():
     for process in processes:
         process.join()
 
-    write_results(count_orders.value, DURATION)
+    write_results(count_orders.value, DURATION, OUTPUT_DIR)
 
 
 if __name__ == '__main__':
@@ -139,28 +153,30 @@ if __name__ == '__main__':
     # Add arguments with default values and type conversion
     parser.add_argument(
         "-u", "--base_url",
-        default=BASE_URL,
+        default=DEFAULT_BASE_URL,
         help="Base URL for the application (default: %(default)s)",
     )
     parser.add_argument(
         "-w", "--warehouses",
         type=int,
-        default=WAREHOUSES,
+        default=DEFAULT_WAREHOUSES,
         help="Number of warehouses to simulate (default: %(default)s)",
     )
     parser.add_argument(
         "-d", "--duration",
         type=int,
-        default=DURATION,
+        default=DEFAULT_DURATION,
         help="Duration of the simulation in seconds (default: %(default)s)",
+    )
+    parser.add_argument(
+        "-o", "--output_dir",
+        type=str,
+        default=DEFAULT_OUTPUT_DIR
     )
 
     # Parse arguments from command line
     args = parser.parse_args()
 
-    # Store arguments in variables
-    BASE_URL = args.base_url
-    WAREHOUSES = args.warehouses
-    DURATION = args.duration
+    Path(args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    main()
+    main(args)
