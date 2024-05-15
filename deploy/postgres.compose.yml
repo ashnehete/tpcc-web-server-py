@@ -20,11 +20,10 @@ services:
       - db
     image: tpcc-web-server-py:latest
     ports:
-      - "5000:5000"
+      - "8000:8000"
     environment:
       DATABASE_URL: postgresql://user:password@db/tpcc_db
       WAREHOUSES: 10
-      GUNICORN_CMD_ARGS: "--bind=0.0.0.0:5000 --workers=3"
 
 volumes:
   pgdata:
