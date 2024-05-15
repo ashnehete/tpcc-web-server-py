@@ -32,8 +32,6 @@ def virtual_user(pid: int, count_orders: Value, run: Value, args):
     WAREHOUSES = args.warehouses
     OUTPUT_DIR = args.output_dir
 
-    print(BASE_URL, WAREHOUSES, OUTPUT_DIR)
-
     transaction_log = defaultdict(list)
     while run.value:
         choice = randint(1, 100)
