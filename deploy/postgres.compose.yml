@@ -13,7 +13,9 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   server:
-    build: .
+    build:
+      context: ../
+      dockerfile: Dockerfile
     depends_on:
       - db
     image: tpcc-web-server-py:latest

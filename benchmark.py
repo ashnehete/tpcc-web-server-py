@@ -8,7 +8,7 @@ from random import randint
 
 import requests
 
-BASE_URL = 'http://127.0.0.1:8080'
+BASE_URL = 'http://127.0.0.1:8000'
 WAREHOUSES = 10
 DURATION = 5
 

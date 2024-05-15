@@ -1,0 +1,12 @@
+version: "3"
+services:
+  server:
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    image: ashnehete/tpcc-sqlite-http:latest
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: sqlite:////app/data/my.db
+      WAREHOUSES: 10
