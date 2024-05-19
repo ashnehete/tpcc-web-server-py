@@ -8,6 +8,6 @@ spec:
   ports:
     - name: "8000"
       port: 8000
-      targetPort: primary-svc
+      targetPort: replica-svc
   selector:
     service: replica

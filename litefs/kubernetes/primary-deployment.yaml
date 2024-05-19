@@ -22,11 +22,16 @@ spec:
               value: sqlite:////litefs/my.db
             - name: IS_PRIMARY
               value: "true"
+            - name: PRIMARY_URL
+              value: "http://primary:20202"
           image: ashnehete/tpcc-litefs-http
           name: primary
           ports:
             - containerPort: 8000
               name: primary-svc
+              protocol: TCP
+            - containerPort: 20202
+              name: primary-coord
               protocol: TCP
           securityContext:
             privileged: true

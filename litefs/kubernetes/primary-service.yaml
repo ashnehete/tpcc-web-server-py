@@ -8,7 +8,10 @@ spec:
   ports:
     - name: "8000"
       port: 8000
-      targetPort: replica-svc
+      targetPort: primary-svc
+    - name: "20202"
+      port: 20202
+      targetPort: primary-coord
   selector:
     service: primary
 status:
