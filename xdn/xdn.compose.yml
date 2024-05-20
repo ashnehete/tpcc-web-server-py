@@ -2,6 +2,7 @@ version: '3'
 services:
   nginx:
     image: nginx:alpine
+    network_mode: host
     command:
       - "nginx"
       - "-g"
