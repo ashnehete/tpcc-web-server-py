@@ -1,0 +1,14 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    command:
+      - "nginx"
+      - "-g"
+      - "daemon off;"
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/nginx.conf
+    ports:
+      - "8080:80"
