@@ -80,7 +80,19 @@ curl --request POST 'http://localhost:5000/init_db' \
 ./litefs/run.sh help
 ```
 
-### Experiment
+## Run Benchmark
+
+```shell
+# Run benchmark for 30 minutes
+# Application located at http://localhost
+# Output location: results/test
+python benchmark.py -u http://localhost -d 1800 -o "results/test" &
+
+# For more info
+python benchmark.py --help
+```
+
+## Experiment
 
 **Duration:** 30 minutes
 
@@ -108,19 +120,15 @@ Each node had the following processes running:
 
 ### Results
 
-**MQTh (Throughput of Orders Transaction)** = 11.28 requests / second
-
-| Transaction  | P50    | P90    | P95    | P99    |
-|--------------|--------|--------|--------|--------|
-| order        | 0.0693 | 0.1102 | 0.1236 | 0.3309 |
-| payment      | 0.044  | 0.081  | 0.0912 | 0.3046 |
-| delivery     | 0.0945 | 0.136  | 0.152  | 0.3888 |
-| order_status | 0.0275 | 0.0485 | 0.0672 | 0.0951 |
-| stock_level  | 0.4376 | 0.5132 | 0.5352 | 0.5705 |
-
-![CDF of Latencies Per Transaction](results/cloudlab_1800/cdf_latency.png)
-
-![Sorted Latencies Per Transaction](results/cloudlab_1800/sorted_latency.png)
+| Experiment           | MQTh    |
+|----------------------|---------|
+| xdn_rsync            | 29.8528 |
+| cloudlab_sqlite_1800 | 27.5611 |
+| kubernetes           | 22.0144 |
+| postgres_1800        | 14.435  |
+| no_nginx_1800        | 13.8778 |
+| cloudlab_1800        | 11.2811 |
+| xdn_fuselog          | 7.9711  |
 
 ## Acknowledgements
 
