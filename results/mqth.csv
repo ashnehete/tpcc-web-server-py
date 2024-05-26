@@ -1,8 +1,8 @@
 Experiment,MQTh
-xdn_rsync,29.8528
-cloudlab_sqlite_1800,27.5611
-kubernetes,22.0144
-postgres_1800,14.435
-no_nginx_1800,13.8778
-cloudlab_1800,11.2811
-xdn_fuselog,7.9711
+XDN RSync,29.8528
+SQLite,27.5611
+Kubernetes: LiteFS,22.0144
+PostgreSQL,14.435
+LiteFS w/o Nginx,13.8778
+LiteFS,11.2811
+XDN Fuselog,7.9711
